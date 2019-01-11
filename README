@@ -1,1 +1,4 @@
 Contains the python files and libraries required to operate the battery monitoring jig.
+
+BatteryMonitor.py is the main file
+uiexample.py is a source file used to create the UI for the program.
