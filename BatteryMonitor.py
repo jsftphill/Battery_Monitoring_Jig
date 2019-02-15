@@ -21,6 +21,7 @@ import xlsxwriter
 import time
 import datetime
 import serial
+#from serial.serialjava import Serial
 from builtins import *
 from mcculw import ul
 from mcculw.enums import InterfaceType
@@ -33,7 +34,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 # Defines
-SERIAL_PORT = 'COM20'
+SERIAL_PORT = 'COM95' #CONFIRM COM PORT
 # set this to the same rate used on the Arduino
 SERIAL_RATE = 115200
 
@@ -89,6 +90,10 @@ class BatteryMonitor(UIExample):
             channel = 0
             ai_range = ULRange.BIP10VOLTS
             ser = serial.Serial(SERIAL_PORT, SERIAL_RATE)
+
+            ts = time.time()
+            st = datetime.datetime.fromtimestamp(ts).strftime('%H:%M:%S')
+
             value1 = ul.v_in(self.board_num, channel, ai_range)
             value1 = value1 * 2.06 # Number calculated to compensate for voltage divider.
 
@@ -135,6 +140,7 @@ class BatteryMonitor(UIExample):
 
             self.temperatureLabel["text"] = str(tempValue)
 
+
             # # Write values
             # worksheet.write(row, col, value1)
             # worksheet.write(row, col + 1, value2)
@@ -148,7 +154,7 @@ class BatteryMonitor(UIExample):
             # row += 1
 
             # Write values on to spreadsheet
-            if flag >= 30: #1800 seconds = 30 seconds
+            if flag >= 30: #Log every 30 seconds
                 worksheet.write(row, col, value1)
                 worksheet.write(row, col + 1, value2)
                 worksheet.write(row, col + 2, value3)
@@ -158,6 +164,7 @@ class BatteryMonitor(UIExample):
                 worksheet.write(row, col + 6, value7)
                 worksheet.write(row, col + 7, value8)
                 worksheet.write(row, col + 8, tempValue)
+                worksheet.write(row, col + 9, st)
                 row += 1
                 flag = 0
             else:
@@ -181,7 +188,7 @@ class BatteryMonitor(UIExample):
 
     def quit(self):
         workbook.close()
-        messagebox.showwarning("SPREADSHEET CREATED", "Check directory")
+        messagebox.showwarning("SPREADSHEET CREATED", "Check directory & Record Batterys")
         self.master.destroy()
 
     def create_widgets(self):
